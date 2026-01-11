@@ -1,0 +1,52 @@
+[
+  {
+    "name": "Inshorts",
+    "base_url": "https://inshorts.com",
+    "list_url": "https://inshorts.com/en/read",
+    "selectors": {
+      "links": "div.news-card a.source",
+      "content": "div.news-card-content div[itemprop='articleBody']"
+    },
+    "dynamic": false
+  },
+  {
+    "name": "Free Press Journal",
+    "base_url": "https://www.freepressjournal.in",
+    "list_url": "https://www.freepressjournal.in/india",
+    "selectors": {
+      "links": "div.card-body a",
+      "content": "div.storyBody p"
+    },
+    "dynamic": false
+  },
+  {
+    "name": "The Sentinel Assam",
+    "base_url": "https://www.sentinelassam.com",
+    "list_url": "https://www.sentinelassam.com/national",
+    "selectors": {
+      "links": "h3.title a",
+      "content": "div.article-content p"
+    },
+    "dynamic": false
+  },
+  {
+    "name": "The Statesman",
+    "base_url": "https://www.thestatesman.com",
+    "list_url": "https://www.thestatesman.com/india",
+    "selectors": {
+      "links": "h3.post-title a",
+      "content": "div.td-post-content p"
+    },
+    "dynamic": false
+  },
+  {
+    "name": "The Tribune India",
+    "base_url": "https://www.tribuneindia.com",
+    "list_url": "https://www.tribuneindia.com/news/nation",
+    "selectors": {
+      "links": "h5 a",
+      "content": "div.story p"
+    },
+    "dynamic": true
+  }
+]

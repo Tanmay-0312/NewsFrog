@@ -1,0 +1,376 @@
+/* ===============================
+   🐸 NewsFrog Brand System
+================================ */
+
+:root {
+  /* Base */
+  --bg-main: #0e0e0e;
+  --bg-card: #1c1c1c;
+
+  /* Frog theme */
+  --frog-primary: #6ee7b7;
+  --frog-primary-dark: #34d399;
+
+  /* AI */
+  --frog-ai: #8b7bff;
+
+  /* Text */
+  --frog-muted: #9ca3af;
+
+  /* Danger */
+  --frog-danger: #dc2626;
+}
+
+button {
+  background: #2a2a2a;
+  color: white;
+  border: none;
+  padding: 10px 18px;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+
+/* AI buttons (Summarize, Explain AI) */
+.btn-ai {
+  background: linear-gradient(135deg, var(--frog-ai), #6f5bff);
+}
+
+/* Frog brain / personalization */
+.btn-frog {
+  background: linear-gradient(
+    135deg,
+    var(--frog-primary),
+    var(--frog-primary-dark)
+  );
+  color: #042f2e;
+  font-weight: 600;
+}
+
+/* Favorites */
+.btn-fav {
+  background: linear-gradient(135deg, #facc15, #eab308);
+  color: #422006;
+}
+
+/* Logout / danger */
+.btn-danger {
+  background: linear-gradient(135deg, #ef4444, var(--frog-danger));
+}
+
+/* ===============================
+   ROOT FIX (OVERRIDE VITE DEFAULT)
+   =============================== */
+
+#root {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  text-align: initial;
+  max-width: none;
+}
+
+/* ===============================
+   VITE DEMO STYLES (SAFE TO KEEP)
+   =============================== */
+
+.logo {
+  height: 6em;
+  padding: 1.5em;
+  will-change: filter;
+  transition: filter 300ms;
+}
+
+.logo:hover {
+  filter: drop-shadow(0 0 2em #646cffaa);
+}
+
+.logo.react:hover {
+  filter: drop-shadow(0 0 2em #61dafbaa);
+}
+
+@keyframes logo-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  a:nth-of-type(2) .logo {
+    animation: logo-spin infinite 20s linear;
+  }
+}
+
+.card {
+  padding: 2em;
+}
+
+.read-the-docs {
+  color: #888;
+}
+
+/* ===============================
+   APP LAYOUT (REAL APP STYLES)
+   =============================== */
+
+.app-root {
+  min-height: 100vh;
+  width: 100%;
+  background: #0e0e0e;
+  padding: 20px;
+  box-sizing: border-box;
+}
+
+/* ===============================
+   AUTH PAGES
+   =============================== */
+
+.auth-page {
+  min-height: 100vh;
+  width: 100%;
+  background: #0e0e0e;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.auth-box {
+  background: #1c1c1c;
+  padding: 30px;
+  border-radius: 12px;
+  width: 320px;
+  color: white;
+}
+/* ===============================
+   AUTH PAGE POLISH
+   =============================== */
+
+.auth-box h2 {
+  margin-bottom: 20px;
+  font-size: 24px;
+  font-weight: 600;
+  text-align: center;
+}
+
+.auth-box input {
+  width: 100%;
+  padding: 12px 14px;
+  margin-bottom: 14px;
+  border-radius: 8px;
+  border: 1px solid #333;
+  background: #111;
+  color: white;
+  font-size: 14px;
+  outline: none;
+  transition: border 0.2s, box-shadow 0.2s;
+}
+
+.auth-box input::placeholder {
+  color: #777;
+}
+
+.auth-box input:focus {
+  border-color: #4f46e5;
+  box-shadow: 0 0 0 2px rgba(79, 70, 229, 0.3);
+}
+
+.auth-box button {
+  width: 100%;
+  padding: 12px;
+  margin-top: 10px;
+  border-radius: 8px;
+  border: none;
+  background: linear-gradient(135deg, #4f46e5, #6366f1);
+  color: white;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.auth-box button:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 8px 20px rgba(79, 70, 229, 0.35);
+}
+
+.auth-box button:active {
+  transform: translateY(0);
+  box-shadow: none;
+}
+
+.auth-box p {
+  margin-top: 18px;
+  font-size: 14px;
+  color: #aaa;
+  text-align: center;
+}
+
+.auth-box a {
+  color: #6366f1;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.auth-box a:hover {
+  text-decoration: underline;
+}
+
+/* Soft glow around card */
+.auth-box {
+  box-shadow:
+    0 20px 40px rgba(0, 0, 0, 0.6),
+    0 0 0 1px rgba(255, 255, 255, 0.04);
+}
+@keyframes fadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.auth-box {
+  animation: fadeUp 0.4s ease-out;
+}
+/* ===============================
+   AUTH FORM ALIGNMENT FIX
+   =============================== */
+
+.auth-box {
+  box-sizing: border-box;
+}
+
+.auth-box input,
+.auth-box button {
+  box-sizing: border-box;
+}
+
+/* Make inputs feel visually centered */
+.auth-box input {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* Optional: slightly narrower inputs for better balance */
+.auth-box input {
+  width: 100%;
+}
+
+/* Ensure button matches input width perfectly */
+.auth-box button {
+  width: 100%;
+}
+.auth-form {
+  width: 100%;
+}
+.auth-select {
+  width: 100%;
+  padding: 12px 14px;
+  margin-bottom: 14px;
+  border-radius: 8px;
+  border: 1px solid #333;
+  background: #111;
+  color: white;
+  font-size: 14px;
+  outline: none;
+  cursor: pointer;
+}
+
+.auth-select:focus {
+  border-color: #4f46e5;
+  box-shadow: 0 0 0 2px rgba(79, 70, 229, 0.3);
+}
+.nav-bar {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  margin: 20px auto;
+  max-width: 1100px;
+}
+
+.primary-actions {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  margin: 30px 0;
+}
+
+.primary {
+  padding: 14px 30px;
+  font-size: 18px;
+  border-radius: 14px;
+  background: linear-gradient(135deg, #6366f1, #8b5cf6);
+  color: white;
+  font-weight: 600;
+}
+
+.glow {
+  box-shadow: 0 0 20px rgba(139, 92, 246, 0.5);
+}
+
+.categories {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-bottom: 24px;
+}
+
+.pill {
+  padding: 8px 18px;
+  border-radius: 999px;
+  background: #222;
+  border: 1px solid #444;
+  color: white;
+}
+
+.media-controls {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  opacity: 0.85;
+  margin-bottom: 20px;
+}
+
+.danger {
+  background: #7f1d1d;
+}
+.personalized-panel {
+  margin: 30px auto;
+  max-width: 800px;
+  padding: 24px;
+  background: #1c1c1c;
+  border-radius: 16px;
+  text-align: center;
+  box-shadow: 0 0 30px rgba(99, 102, 241, 0.15);
+}
+
+
+/* ===============================
+   Frog Motion
+================================ */
+
+button:hover {
+  transform: translateY(-2px) scale(1.02);
+}
+
+/* Special glow for important frog actions */
+.btn-frog:hover {
+  box-shadow: 0 0 20px rgba(110, 231, 183, 0.5);
+}
+@media (max-width: 800px) {
+  .app-root {
+    padding: 14px;
+  }
+
+  div[style*="column-count"] {
+    column-count: 1 !important;
+  }
+}

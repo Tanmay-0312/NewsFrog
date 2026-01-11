@@ -1,0 +1,35 @@
+# ---------- Python ----------
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.venv/
+venv/
+.idea/
+
+# ---------- ENV / secrets ----------
+.env
+backend/.env
+config.json
+
+# ---------- Database ----------
+backend/users
+*.db
+
+# ---------- Node ----------
+node_modules/
+frontend/node_modules/
+dist/
+frontend/dist/
+
+# ---------- Generated / cache ----------
+generated_pdfs/
+backend/generated_pdfs/
+news_output.json
+summarized_news.json
+explain_cache.json
+scraped_output.json
+
+# ---------- OS ----------
+.DS_Store
+Thumbs.db
