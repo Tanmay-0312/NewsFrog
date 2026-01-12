@@ -42,6 +42,7 @@ export default function Home() {
   const speechModeRef = useRef(null);
   const [todaysPaper, setTodaysPaper] = useState([]);
   const [toast, setToast] = useState(null);
+  const API = import.meta.env.VITE_API_URL;
 
 
   
@@ -116,7 +117,7 @@ export default function Home() {
 
   async function fetchArticles() {
     setIsFetching(true);
-    await fetch("http://localhost:8000/fetch", { method: "POST" });
+    await fetch(`${API}/fetch`, { method: "POST" });
 
     setNews([]);
     setDisplay([]);
@@ -131,13 +132,13 @@ export default function Home() {
   async function summarizeNews() {
     setIsSummarizing(true);
     showToast("Hopping through today’s news 🧠", "ai");
-    await fetch("http://localhost:8000/summarize", { method: "POST" });
+    await fetch(`${API}/summarize`, { method: "POST" });
     pollSummarizedNews();
   }
 
   async function pollSummarizedNews() {
     const interval = setInterval(async () => {
-      const r = await fetch("http://localhost:8000/news?limit=200");
+      const r = await fetch(`${API}/news?limit=200`);
       const data = await r.json();
 
       if (data.length) {
@@ -157,7 +158,7 @@ export default function Home() {
     if (!isSummarized) return;
 
     const r = await fetch(
-      `http://localhost:8000/news/category?category=${cat}`
+      `${API}/news/category?category=${cat}`
     );
     const data = await r.json();
 
@@ -178,7 +179,7 @@ export default function Home() {
 
     try {
       const r = await fetch(
-        `http://localhost:8000/explain?mode=${mode}`,
+        `${API}/explain?mode=${mode}`,
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -221,7 +222,7 @@ export default function Home() {
 
     try {
       const r = await fetch(
-        "http://localhost:8000/explain?mode=long",
+        `${API}/explain?mode=long`,
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -275,11 +276,12 @@ export default function Home() {
       articles: todaysPaper.map(a => ({
         title: a.title,
         summary: a.summary,
-        image: a.image || null
+        image: a.image || null,
+        source: a.source
       }))
     };
 
-    const res = await fetch("http://localhost:8000/newspaper/pdf", {
+    const res = await fetch(`${API}/newspaper/pdf`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json"
@@ -455,7 +457,7 @@ export default function Home() {
       return;
     }
 
-    fetch(`http://127.0.0.1:8000/track?category=${article.category}`, {
+    fetch(`${API}/track?category=${article.category}`, {
       method: "POST",
       headers: {
         Authorization: `Bearer ${token}`
@@ -555,7 +557,7 @@ export default function Home() {
 
   if (token) {
     try {
-      await fetch("http://127.0.0.1:8000/track?category=" + category, {
+      await fetch(`${API}/track?category=${category}`, {
         method: "POST",
         headers: {
           Authorization: `Bearer ${token}`
