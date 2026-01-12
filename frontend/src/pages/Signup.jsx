@@ -6,6 +6,7 @@ export default function Signup() {
   const [password, setPassword] = useState("");
   const [role, setRole] = useState("user"); // 👈 NEW
   const navigate = useNavigate();
+  const API = import.meta.env.VITE_API_URL;
 
   // 🔒 Redirect if already logged in
   useEffect(() => {
@@ -16,7 +17,7 @@ export default function Signup() {
   }, [navigate]);
 
   async function handleSignup() {
-    const res = await fetch("http://127.0.0.1:8000/signup", {
+    const res = await fetch(`${API}/signup`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({

@@ -6,6 +6,7 @@ export default function WriteArticle() {
   const [category, setCategory] = useState("india");
   const [content, setContent] = useState("");
   const [loading, setLoading] = useState(false);
+  const API = import.meta.env.VITE_API_URL;
 
   const navigate = useNavigate();
 
@@ -19,7 +20,7 @@ export default function WriteArticle() {
 
     const token = localStorage.getItem("token");
 
-    const res = await fetch("http://127.0.0.1:8000/blogger/article", {
+    const res = await fetch(`${API}/blogger/article`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

@@ -2,9 +2,10 @@ import { useEffect, useState } from "react";
 
 export default function PublishedArticles() {
   const [articles, setArticles] = useState([]);
+  const API = import.meta.env.VITE_API_URL;
 
   useEffect(() => {
-    fetch("http://127.0.0.1:8000/blogger/articles")
+    fetch(`${API}/blogger/articles`)
 
         .then(res => {
             if (!res.ok) throw new Error("Failed to fetch");

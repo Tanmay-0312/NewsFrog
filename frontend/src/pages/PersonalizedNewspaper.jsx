@@ -4,9 +4,10 @@ export default function PersonalizedNewspaper() {
   const [paper, setPaper] = useState([]);
   const [msg, setMsg] = useState("");
   const token = localStorage.getItem("token");
+  const API = import.meta.env.VITE_API_URL;
 
   async function generatePaper() {
-    const res = await fetch("http://127.0.0.1:8000/newspaper/build", {
+    const res = await fetch(`${API}/build`, {
       method: "POST",
       headers: {
         Authorization: `Bearer ${token}`
@@ -19,7 +20,7 @@ export default function PersonalizedNewspaper() {
   }
 
   async function loadPaper() {
-    const res = await fetch("http://127.0.0.1:8000/newspaper", {
+    const res = await fetch(`${API}/newspaper`, {
       headers: {
         Authorization: `Bearer ${token}`
       }
@@ -30,7 +31,7 @@ export default function PersonalizedNewspaper() {
   }
 
   async function downloadMyNewspaperPDF() {
-    const res = await fetch("http://127.0.0.1:8000/newspaper/pdf", {
+    const res = await fetch(`${API}/pdf`, {
       method: "POST",
       headers: {
         Authorization: `Bearer ${token}`,

@@ -5,6 +5,8 @@ export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
+  const API = import.meta.env.VITE_API_URL;
+
 
   // 🔒 Redirect if already logged in
   useEffect(() => {
@@ -19,7 +21,7 @@ export default function Login() {
     formData.append("username", email);   // ⚠️ MUST be username
     formData.append("password", password);
 
-    const res = await fetch("http://127.0.0.1:8000/login", {
+    const res = await fetch(`${API}/login`, {
       method: "POST",
       headers: {
         "Content-Type": "application/x-www-form-urlencoded"
