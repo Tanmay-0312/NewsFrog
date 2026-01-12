@@ -24,7 +24,7 @@ export default function Home() {
   const [hasMore, setHasMore] = useState(true);
   const [search, setSearch] = useState("");
   const [showingFavorites, setShowingFavorites] = useState(false);
-
+  const currentArticleRef = useRef(null);
   const [isFetching, setIsFetching] = useState(false);
   const [isSummarizing, setIsSummarizing] = useState(false);
   const [isSummarized, setIsSummarized] = useState(false);
@@ -33,7 +33,6 @@ export default function Home() {
   const [explainResult, setExplainResult] = useState("");
   const [isExplaining, setIsExplaining] = useState(false);
   const [isListening, setIsListening] = useState(false);
-  const [recognition, setRecognition] = useState(null);
   const recognitionRef = useRef(null);
   const [currentArticle, setCurrentArticle] = useState(null);
   const [resumeAfterExplain, setResumeAfterExplain] = useState(false);
@@ -199,55 +198,16 @@ export default function Home() {
   }
 
 
-  async function recordAndSendVoice() {
-    try {
-    // 1. Ask for mic
-      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-
-    // 2. Record audio
-      const mediaRecorder = new MediaRecorder(stream);
-      const chunks = [];
-
-      mediaRecorder.ondataavailable = e => chunks.push(e.data);
-
-      mediaRecorder.onstop = async () => {
-        const blob = new Blob(chunks, { type: "audio/webm" });
-
-        const formData = new FormData();
-        formData.append("audio", blob);
-
-      // 3. Send to Whisper backend
-        const res = await fetch("http://localhost:8000/voice", {
-          method: "POST",
-          body: formData
-        });
-
-        const data = await res.json();
-        console.log("🗣️ Whisper heard:", data.text);
-
-      // 4. Handle commands
-        handleVoiceCommand(data.text);
-
-        stream.getTracks().forEach(t => t.stop());
-      };
-
-      mediaRecorder.start();
-
-    // 3–4 seconds is perfect
-      setTimeout(() => {
-        mediaRecorder.stop();
-      }, 4000);
-
-    } catch (err) {
-      console.error("Mic error:", err);
-    }
-  }
+  
 
   async function explainAndRead(article) {
-    trackInteraction(article, 3);
+    if (!article) {
+      showToast("🐸 No article selected yet.");
+      return;
+    }
 
+    trackInteraction(article, 3);
     updatePreference(article.category, 3);
-    if (!article) return;
 
     
     setSpeechMode("explanation");
@@ -362,6 +322,69 @@ export default function Home() {
     setDisplay([...display, ...news.slice(display.length, display.length + 6)]);
   }
 
+
+  function initRecognition() {
+    if (!("webkitSpeechRecognition" in window || "SpeechRecognition" in window)) {
+      alert("Speech Recognition not supported in this browser");
+      return null;
+    }
+
+    const SpeechRecognition =
+      window.SpeechRecognition || window.webkitSpeechRecognition;
+
+    const recog = new SpeechRecognition();
+    recog.lang = "en-IN";
+    recog.continuous = true;
+    recog.interimResults = false;
+
+    recog.onstart = () => {
+      console.log("🎙️ Listening...");
+      setIsListening(true);
+      showToast("Listening... 🎙️");
+    };
+
+    recog.onresult = (event) => {
+      const text =
+        event.results[event.results.length - 1][0].transcript
+          .toLowerCase()
+          .trim();
+
+      console.log("🗣️ Command:", text);
+      handleVoiceCommand(text);
+      recog.stop()
+    };
+
+    recog.onerror = (e) => {
+      console.error("❌ Voice error:", e);
+      setIsListening(false);
+    };
+
+    recog.onend = () => {
+      console.log("🛑 Voice stopped");
+      setIsListening(false);
+    };
+
+    return recog;
+  }
+
+  function toggleVoiceListening() {
+    if (!recognitionRef.current) {
+      recognitionRef.current = initRecognition();
+    }
+
+    if (!recognitionRef.current) return;
+
+    try {
+      if (!isListening) {
+        recognitionRef.current.start();
+      } else {
+        recognitionRef.current.stop();
+      }
+    } catch (err) {
+      console.log("⚠️ Recognition already running");
+    }
+  }
+
   function readHeadlines(startIndex = 0) {
     
     setSpeechMode("headlines");
@@ -389,13 +412,14 @@ export default function Home() {
 
       u.onstart = () => {
         setCurrentArticle(n);
+        currentArticleRef.current = n;
         headlineIndexRef.current = i;
       };
 
       u.onend = () => {
         if (interruptForExplainRef.current) {
           interruptForExplainRef.current = false;
-          explainAndRead(n);
+          explainAndRead(currentArticleRef.current);
           return;
         }
       };
@@ -439,82 +463,6 @@ export default function Home() {
     }).catch(err => console.error("❌ Track failed", err));
   }
 
-
-
-
-  function startVoiceCommand() {
-    return;
-    if (!("webkitSpeechRecognition" in window || "SpeechRecognition" in window)) {
-      alert("Voice recognition not supported in this browser");
-      return;
-    }
-
-    const SpeechRecognition =
-      window.SpeechRecognition || window.webkitSpeechRecognition;
-
-  // 🔁 Create only once
-    if (!recognitionRef.current) {
-      const recog = new SpeechRecognition();
-
-      recog.lang = "en-IN";
-      recog.continuous = true;        // 🔥 VERY IMPORTANT
-      recog.interimResults = false;
-
-      recog.onstart = () => {
-        console.log("🎙️ Voice recognition started");
-        setIsListening(true);
-      };
-
-      recog.onaudiostart = () => {
-        console.log("🔊 Audio detected");
-      };
-
-      recog.onspeechstart = () => {
-        console.log("🗣️ Speech detected");
-      };
-
-      recog.onresult = (event) => {
-        const last =
-          event.results[event.results.length - 1][0].transcript
-            .toLowerCase()
-            .trim();
-
-        console.log("🗣️ Command:", last);
-
-        if (
-          last.includes("read") ||
-          last.includes("start") ||
-          last.includes("headlines")
-        ) {
-          readHeadlines();
-        }
-
-        if (
-          last.includes("stop")
-        ) {
-          stopReading();
-        }
-      };
-
-      recog.onerror = (e) => {
-        console.error("❌ Voice error:", e);
-        setIsListening(false);
-      };
-
-      recog.onend = () => {
-        console.log("🛑 Recognition ended");
-        setIsListening(false);
-      };
-
-      recognitionRef.current = recog;
-      setRecognition(recog); // keeping your state intact
-    }
-    
-    if (!isListening) {
-      recognitionRef.current.start();
-    }
-
-  }
   function unlockSpeech() {
     const utter = new SpeechSynthesisUtterance(" ");
     speechSynthesis.speak(utter);
@@ -574,25 +522,26 @@ export default function Home() {
     if (cmd.includes("world")) {
       loadCategory("world");
     }
-    if (
-      cmd.includes("explain") ||
-      cmd.includes("explain this") ||
-      cmd.includes("explain article")
-    ) {
-      if (speechMode === "headlines") {
+    if (cmd.includes("explain")) {
+
+      const articleToExplain = currentArticleRef.current;
+
+      if (!articleToExplain) {
+        showToast("🐸 No article selected yet. Say: read headlines first.");
+        return;
+      }
+
+      if (speechModeRef.current === "headlines") {
         interruptForExplainRef.current = true;
         setResumeAfterExplain(true);
 
-    // 🔥 stop headline immediately
         speechSynthesis.cancel();
-        setTimeout(()=>{
-          explainAndRead(currentArticle);
-        }, 150);
 
-    
+        setTimeout(() => {
+          explainAndRead(articleToExplain);
+        }, 150);
       } else {
-    // If not in headlines, just explain
-        explainAndRead(currentArticle);
+        explainAndRead(articleToExplain);
       }
     }
 
@@ -773,7 +722,7 @@ export default function Home() {
 
       {/* ================= MEDIA CONTROLS ================= */}
       <div className="media-controls">
-        <button onClick={recordAndSendVoice}>🎤</button>
+        <button onClick={toggleVoiceListening}>🎤</button>
         <button
           onClick={() => {
             unlockSpeech();
