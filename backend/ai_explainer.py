@@ -3,18 +3,19 @@ import json
 import os
 import hashlib
 
+from dotenv import load_dotenv
+
 # ---------------- CONFIG ----------------
 BASE_DIR = os.path.dirname(__file__)
-CONFIG_PATH = os.path.join(BASE_DIR, "config.json")
 CACHE_PATH = os.path.join(BASE_DIR, "explain_cache.json")
 
-with open(CONFIG_PATH, "r") as f:
-    CONFIG = json.load(f)
+# ✅ Load .env (works locally) + Render ENV vars (works on Render)
+load_dotenv()
 
-GEMINI_API_KEY = CONFIG.get("gemini_api_key")
+GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
 
 if not GEMINI_API_KEY:
-    raise RuntimeError("❌ gemini_api_key missing in config.json")
+    raise RuntimeError("❌ GEMINI_API_KEY missing (env var not set)")
 
 client = genai.Client(api_key=GEMINI_API_KEY)
 
